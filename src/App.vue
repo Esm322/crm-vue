@@ -1,30 +1,18 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <header class="header">
+    <div class="container header__container">
+      <a href="index.html" class="header__logo">
+        <img src="img/logo-1024.svg" alt="CRM skb." class="logo-svg">
+      </a>
+      <form class="form header__form" id="header-form">
+        <label class="form__label">
+          <input class="form__input" id="header-input" type="text" placeholder="Введите запрос">
+        </label>
+      </form>
+    </div>
+  </header>
+
+  <router-view :key="$route.fullPath"/>
+
+  <div id="teleport-target"></div>
 </template>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
