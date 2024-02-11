@@ -14,5 +14,5 @@
 
   <router-view :key="$route.fullPath"/>
 
-  <div id="teleport-target"></div>
+  <footer></footer>
 </template>

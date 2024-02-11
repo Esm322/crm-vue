@@ -73,10 +73,11 @@
             </tr>
           </thead>
           <ClientTableTbody
-          v-model:clients="clients"/>
+          v-model:clients="clients"
+          @show-modal="showModalChanges"/>
         </table>
         <button class="add-client btn-reset" id="add"
-        @click="showModal">
+        @click="showModalAdd">
           <svg class="svg-add" width="23" height="16" viewBox="0 0 23 16" fill="none"
           xmlns="http://www.w3.org/2000/svg">
             <path d="M14.5 8C16.71 8 18.5 6.21 18.5 4C18.5 1.79 16.71 0 14.5 0C12.29
@@ -87,52 +88,70 @@
           Добавить клиента
         </button>
 
-        <ModalWindow v-show="isModalVisible" @close="closeModal"/>
+        <ModalWindowAdd v-show="isModalAddVisible"
+        v-model:get-clients-data="getClientsData"
+        v-model:is-modal-add-visible="isModalAddVisible"
+        @close-modal-add="closeModalAdd"/>
+
+        <ModalWindowChanges v-show="isModalChangesVisible"
+        v-model:get-clients-data="getClientsData"
+        v-model:is-modal-changes-visible="isModalChangesVisible"
+        @close-modal-changes="closeModalChanges"/>
       </div>
     </section>
   </main>
 </template>
 
 <script>
-import ModalWindow from '@/components/ModalWindow.vue';
+import { mapState } from 'pinia';
+import ModalWindowAdd from '@/components/ModalWindowAdd.vue';
+import ModalWindowChanges from '@/components/ModalWindowChanges.vue';
 import ClientTableTbody from '@/components/ClientTableTbody.vue';
-import clientsData from '../data/clientsData';
+import { useClientsStore } from '../stores/clientsData';
 import dateChange from '../helpers/dateChange';
 import dateCreation from '../helpers/dateCreation';
 
 export default {
   data() {
     return {
-      isModalVisible: false,
+      isModalAddVisible: false,
+      isModalChangesVisible: false,
     };
   },
   components: {
-    ModalWindow,
+    ModalWindowAdd,
+    ModalWindowChanges,
     ClientTableTbody,
   },
   computed: {
+    ...mapState(useClientsStore, ['clientsData']),
     clients() {
-      const data = clientsData;
-
-      return data ? data.map((client) => {
+      return this.getClientsData ? this.getClientsData.map((client) => {
         return {
           ...client,
           id: client.id,
+          fullName: `${client.secondName} ${client.firstName} ${client.thirdName}`,
           date: dateCreation(client.date),
           edit: dateChange(client.edit),
         };
       }) : [];
     },
+    getClientsData() {
+      return this.clientsData;
+    },
   },
   methods: {
-    // addClient() {
-
-    // },
-    showModal() {
-      this.isModalVisible = true;
+    showModalAdd() {
+      this.isModalAddVisible = true;
     },
-    closeModal() {
-      this.isModalVisible = false;
+    showModalChanges() {
+      this.isModalChangesVisible = true;
+    },
+    closeModalAdd() {
+      this.isModalAddVisible = false;
+    },
+    closeModalChanges() {
+      this.isModalChangesVisible = false;
     },
   },
 };

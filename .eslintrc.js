@@ -16,6 +16,9 @@ module.exports = {
     'jsx-ally/label-has-associated-control' : 'off',
     'vuejs-accessibility/label-has-for' : 'off',
     'no-return-assign': 'off',
-    "arrow-body-style": "off",
+    'arrow-body-style': 'off',
+    'no-restricted-syntax': 'off',
+    'import/prefer-default-export': 'off',
+    'consistent-return': 'off',
   },
 };
