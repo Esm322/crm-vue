@@ -6,8 +6,10 @@
     :date="client.date"
     :edit="client.edit"
     :contacts="client.contacts"
-    :actions="client.actions"
-    @show="show"/>
+    :active-id="client.id === activeId"
+    :active-id-delete="client.id === activeIdDelete"
+    @show-modal="$emit('showModal', client)"
+    @show-modal-delete="$emit('showModalDelete', client)"/>
   </tbody>
 </template>
 
@@ -15,19 +17,10 @@
 import ClientItem from './ClientItem.vue';
 
 export default {
-  data() {
-    return {
-      currentIsModalChangesVisible: false,
-    };
-  },
-  props: ['clients'],
+  emits: ['showModal', 'showModalDelete'],
+  props: ['clients', 'activeId', 'activeIdDelete'],
   components: {
     ClientItem,
-  },
-  methods: {
-    show() {
-      this.$emit('showModal');
-    },
   },
 };
 </script>

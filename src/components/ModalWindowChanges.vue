@@ -2,10 +2,10 @@
   <ModalWindow>
     <div class="modal__header">
       <h3 class="modal__title">
-        Новый клиент
+        Изменить данные
       </h3>
       <span class="modal__id-title">
-        ID:
+        ID: {{ client.id }}
       </span>
       <button class="btn-reset" @click="close">
         <span class="close" id="close">
@@ -46,18 +46,16 @@
       </div>
     </form>
     <div id="form__add-contact" class="form__add-contact">
-      <div class="add-contact__wrapper-contacts" v-show="addBlocks.length > 0"
-        :class="{ 'add-contact__wrapper-contacts--active': addBlocks.length > 1 }">
-        <ModalWindowAddBlock
-        @pushAddBlock="pushAddBlock"
-        v-for="block in addBlocks" :key="block"
-        v-model:length="addBlocks.length"
-        v-model:select-value="block.selectValue"
-        v-model:input-value="block.inputValue"/>
+      <div class="add-contact__wrapper-contacts" v-show="contacts.length > 0"
+      :class="{ 'add-contact__wrapper-contacts--active': contacts.length > 1 }">
+        <ModalWindowAddBlock v-for="contact in addBlocks" :key="contact"
+        :length="addBlocks.length"
+        v-model:select-value="contact.selectValue"
+        v-model:input-value="contact.inputValue"/>
       </div>
 
-      <button class="add-contact__add-btn btn-reset" :disabled="addBlocks.length === 10"
-      @click="pushAddBlock">
+      <button class="add-contact__add-btn btn-reset"
+      @click.prevent="pushAddBlock">
         <svg class="add-btn__svg" width="14" height="14" viewBox="0 0 14 14"
         fill="none" xmlns="http://www.w3.org/2000/svg">
           <path class="svg-path-first" d="M6.99998 3.66665C6.63331
@@ -95,7 +93,8 @@
     </div>
     <div class="form__wrapper-btn-save">
       <button id="btn-save-contact" class="wrapper-btn-save__btn-save btn-reset"
-      form="form" @click.prevent="addClient">
+      form="form"
+      @click.prevent="change">
         Сохранить
       </button>
     </div>
@@ -107,66 +106,54 @@
 </template>
 
 <script>
-// import { mapActions } from 'pinia';
-// import { useClientsStore } from '@/stores/clientsData';
-// import idCreation from '@/helpers/idCreation';
+import { mapState, mapActions } from 'pinia';
+import { useClientsStore } from '@/stores/clientsData';
 import ModalWindow from './ModalWindow.vue';
 import ModalWindowAddBlock from './ModalWindowAddBlock.vue';
 
 export default {
   data() {
     return {
-      currentIsModalChangesVisible: false,
-      addBlocks: [],
-      firstName: '',
-      secondName: '',
-      thirdName: '',
+      addBlocks: this.activeId.contacts,
+      firstName: this.activeId.firstName,
+      secondName: this.activeId.secondName,
+      thirdName: this.activeId.thirdName,
     };
   },
-  props: ['getClientsData'],
+  props: ['activeId'],
   components: {
     ModalWindow,
     ModalWindowAddBlock,
   },
   computed: {
-    // reactiveData: {
-    //   get() {
-    //     return this.getClientsData;
-    //   },
-    //   set(val) {
-    //     this.$emit('update:getClientsData', val);
-    //   },
-    // },
-    // newClientId() {
-    //   return idCreation(this.reactiveData, true);
-    // },
+    ...mapState(useClientsStore, ['clientsData']),
+    client() {
+      return this.clientsData.find((item) => item.id === this.activeId.id);
+    },
+    contacts() {
+      return this.client.contacts;
+    },
   },
   methods: {
+    ...mapActions(useClientsStore, ['changeClient']),
     close() {
       this.$emit('closeModalChanges');
     },
-    // ...mapActions(useClientsStore, ['saveClients']),
-    // addClient() {
-    //   this.reactiveData
-    //     .push(
-    //       {
-    //         id: idCreation(this.reactiveData, true),
-    //         firstName: this.firstName,
-    //         secondName: this.secondName,
-    //         thirdName: this.thirdName,
-    //         date: new Date(),
-    //         edit: new Date(),
-    //         contacts: this.addBlocks,
-    //       },
-    //     );
+    change() {
+      this.changeClient(
+        this.activeId.id,
+        this.firstName,
+        this.secondName,
+        this.thirdName,
+        this.addBlocks,
+      );
 
-    //   this.saveClients();
-    //   this.close();
-    // },
+      this.close();
+    },
     pushAddBlock() {
       this.addBlocks.push({
         block: ModalWindowAddBlock,
-        selectValue: '0',
+        selectValue: 'phone',
         inputValue: '',
       });
     },

@@ -1,7 +1,7 @@
 export default function dateCreation(date) {
   const newDate = new Date(date);
   const year = newDate.getFullYear();
-  let month = newDate.getMonth();
+  let month = newDate.getMonth() + 1;
   let day = newDate.getDate();
   let hour = newDate.getHours();
   let minute = newDate.getMinutes();

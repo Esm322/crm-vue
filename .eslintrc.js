@@ -20,5 +20,7 @@ module.exports = {
     'no-restricted-syntax': 'off',
     'import/prefer-default-export': 'off',
     'consistent-return': 'off',
+    'no-param-reassign': 'off',
+    'no-unused-expressions': 'off',
   },
 };

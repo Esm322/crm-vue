@@ -6,7 +6,8 @@
       </a>
       <form class="form header__form" id="header-form">
         <label class="form__label">
-          <input class="form__input" id="header-input" type="text" placeholder="Введите запрос">
+          <input class="form__input" id="header-input" type="text" placeholder="Поиск"
+          v-model="searchValue">
         </label>
       </form>
     </div>
@@ -16,3 +17,28 @@
 
   <footer></footer>
 </template>
+
+<script>
+import { useClientsStore } from './stores/clientsData';
+
+export default {
+  data() {
+    return {
+      searchValue: '',
+    };
+  },
+  created() {
+    window.addEventListener('input', () => {
+      if (this.searchValue) {
+        useClientsStore().$patch({
+          searchValueStore: this.searchValue,
+        });
+      } else {
+        useClientsStore().$patch({
+          searchValueStore: '',
+        });
+      }
+    });
+  },
+};
+</script>

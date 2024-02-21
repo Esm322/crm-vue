@@ -5,7 +5,6 @@
     <label class="add-contact__label-select">
       <select class="add-contact__select" name="type-contact"
       v-model="reactiveSelectValue">
-        <option value="0" :disabled="true">Тип связи</option>
         <option value="phone">Телефон</option>
         <option value="additional-phone">Доп. тел.</option>
         <option value="Email">Email</option>
@@ -27,7 +26,7 @@
 
 <script>
 export default {
-  props: ['length', 'contacts', 'selectValue', 'inputValue'],
+  props: ['length', 'selectValue', 'inputValue'],
   computed: {
     reactiveSelectValue: {
       get() {
@@ -48,7 +47,7 @@ export default {
   },
   methods: {
     clearInput() {
-      this.reactiveSelectValue = '';
+      this.reactiveInputValue = '';
     },
   },
 };

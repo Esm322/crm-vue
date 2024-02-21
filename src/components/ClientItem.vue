@@ -27,7 +27,7 @@
       </div>
     </td>
     <td class="table__tbody-tr-td edit">
-      <button class="btn-reset" @click.prevent="show">
+      <button class="btn-reset" @click.prevent="$emit('showModal')">
         <svg width="12" height="12" viewBox="0 0 13 13" fill="none"
           xmlns="http://www.w3.org/2000/svg">
           <path d="M0 10.5002V13.0002H2.5L9.87333 5.62687L7.37333 3.12687L0
@@ -40,7 +40,7 @@
       </button>
     </td>
     <td class="table__tbody-tr-td delete">
-      <button class="btn-reset" @click="deleteClient(id)">
+      <button class="btn-reset" @click="$emit('showModalDelete')">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
         xmlns="http://www.w3.org/2000/svg">
           <path d="M6 0C2.682 0 0 2.682 0 6C0 9.318 2.682 12 6 12C9.318
@@ -57,20 +57,13 @@
 </template>
 
 <script>
-import { mapActions } from 'pinia';
-import { useClientsStore } from '@/stores/clientsData';
 import BaseToolTip from './BaseToolTip.vue';
 
 export default {
-  props: ['id', 'fullName', 'date', 'edit', 'contacts'],
+  emits: ['showModal', 'showModalDelete'],
+  props: ['id', 'fullName', 'date', 'edit', 'contacts', 'activeId', 'activeIdDelete'],
   components: {
     BaseToolTip,
-  },
-  methods: {
-    ...mapActions(useClientsStore, ['deleteClient']),
-    show() {
-      this.$emit('show');
-    },
   },
 };
 </script>

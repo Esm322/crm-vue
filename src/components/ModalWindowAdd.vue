@@ -116,14 +116,13 @@ import ModalWindowAddBlock from './ModalWindowAddBlock.vue';
 export default {
   data() {
     return {
-      currentIsModalAddVisible: false,
       addBlocks: [],
       firstName: '',
       secondName: '',
       thirdName: '',
     };
   },
-  props: ['isModalAddVisible', 'getClientsData'],
+  props: ['clients'],
   components: {
     ModalWindow,
     ModalWindowAddBlock,
@@ -131,10 +130,10 @@ export default {
   computed: {
     reactiveData: {
       get() {
-        return this.getClientsData;
+        return this.clients;
       },
       set(val) {
-        this.$emit('update:getClientsData', val);
+        this.$emit('update:clients', val);
       },
     },
     newClientId() {
@@ -158,8 +157,15 @@ export default {
             firstName: this.firstName,
             secondName: this.secondName,
             thirdName: this.thirdName,
-            date: new Date(),
-            edit: new Date(),
+            fullName: `${this.secondName} ${this.firstName} ${this.thirdName}`,
+            date: {
+              newDate: new Date(),
+              nowDate: Date.now(),
+            },
+            edit: {
+              newEdit: new Date(),
+              nowEdit: Date.now(),
+            },
             contacts: this.addBlocks,
           },
         );
@@ -170,7 +176,7 @@ export default {
     pushAddBlock() {
       this.addBlocks.push({
         block: ModalWindowAddBlock,
-        selectValue: '0',
+        selectValue: 'phone',
         inputValue: '',
       });
     },
