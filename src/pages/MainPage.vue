@@ -1,5 +1,5 @@
 <template>
-  <main class="main">
+  <main class="main offset">
     <section class="clients">
       <h1 class="hidden">skb.</h1>
       <div class="container">
@@ -8,7 +8,7 @@
           Клиенты
         </h2>
 
-        <table class="table">
+        <table class="table" id="table">
 
           <thead class="table__thead">
             <tr class="table__thead-tr">
@@ -115,8 +115,6 @@ export default {
 
       dirEdit: 0,
       isDirEdit: false,
-
-      showAnim: false,
     };
   },
   components: {
@@ -274,6 +272,13 @@ export default {
       this.isModalAddVisible = false;
       this.activeIdDelete = null;
     },
+  },
+  mounted() {
+    this.$watch(
+      () => this.isModalAddVisible || this.activeId,
+      (val) => document.body.classList.toggle('no-overflow', val),
+      { immediate: true },
+    );
   },
 };
 </script>

@@ -20,6 +20,7 @@
             Фамилия*
           </span>
           <input type="text" id="input-firstname" class="label__input" name="second-name"
+          :class="{ 'error-border': errors.errorSecondName && secondName === '' }"
           v-model="secondName">
         </label>
         <label class="form__label">
@@ -27,6 +28,7 @@
             Имя*
           </span>
           <input type="text" id="input-secondname" class="label__input" name="first-name"
+          :class="{ 'error-border': errors.errorFirstName && firstName === '' }"
           v-model="firstName">
         </label>
         <label class="form__label">
@@ -39,8 +41,8 @@
       </div>
     </form>
     <div id="form__add-contact" class="form__add-contact">
-      <div class="add-contact__wrapper-contacts" v-show="contacts.length > 0"
-      :class="{ 'add-contact__wrapper-contacts--active': contacts.length > 1 }">
+      <div class="add-contact__wrapper-contacts" v-show="copyContacts.length > 0"
+      :class="{ 'add-contact__wrapper-contacts--active': copyContacts.length > 1 }">
         <ModalWindowAddBlock v-for="contact in addBlocks" :key="contact"
         :length="addBlocks.length"
         v-model:select-value="contact.selectValue"
@@ -53,10 +55,21 @@
         Добавить контакт
       </button>
     </div>
+
+    <div class="errors-block">
+      <p class="error-block" v-if="errors.errorSecondName">
+        {{ errors.errorSecondName }}
+      </p>
+
+      <p class="error-block" v-if="errors.errorFirstName">
+        {{ errors.errorFirstName }}
+      </p>
+    </div>
+
     <div class="form__wrapper-btn-save">
       <button id="btn-save-contact" class="wrapper-btn-save__btn-save btn-reset"
       form="form"
-      @click.prevent="change">
+      @click.prevent="checkForm">
         Сохранить
       </button>
     </div>
@@ -71,6 +84,7 @@
 <script>
 import { mapState, mapActions } from 'pinia';
 import { useClientsStore } from '@/stores/clientsData';
+import cloneDeep from 'lodash.clonedeep';
 import ModalWindow from './ModalWindow.vue';
 import ModalWindowAddBlock from './ModalWindowAddBlock.vue';
 import AddContactSVG from './SVG components/AddContactSVG.vue';
@@ -79,10 +93,13 @@ import CloseModalSVG from './SVG components/CloseModalSVG.vue';
 export default {
   data() {
     return {
+      errors: {},
       addBlocks: this.activeId.contacts,
       firstName: this.activeId.firstName,
       secondName: this.activeId.secondName,
       thirdName: this.activeId.thirdName,
+
+      copyClient: cloneDeep(this.activeId),
     };
   },
   props: ['activeId'],
@@ -97,13 +114,30 @@ export default {
     client() {
       return this.clientsData.find((item) => item.id === this.activeId.id);
     },
-    contacts() {
+    copyContacts() {
       return this.client.contacts;
     },
   },
   methods: {
-    ...mapActions(useClientsStore, ['changeClient', 'deleteClient']),
+    checkForm() {
+      if (this.firstName && this.secondName) {
+        this.change();
+      }
+
+      if (!this.firstName) {
+        this.errors.errorFirstName = 'Требуется указать имя';
+      }
+
+      if (!this.secondName) {
+        this.errors.errorSecondName = 'Требуется указать фамилию';
+      }
+    },
+    ...mapActions(useClientsStore, ['changeClient', 'deleteClient', 'initialContacts']),
     close() {
+      this.initialContacts(this.activeId.id, this.copyClient.contacts);
+      this.$emit('closeModalChanges');
+    },
+    closeWithSaving() {
       this.$emit('closeModalChanges');
     },
     change() {
@@ -115,11 +149,11 @@ export default {
         this.addBlocks,
       );
 
-      this.close();
+      this.closeWithSaving();
     },
     deleteItem(id) {
       this.deleteClient(id);
-      this.close();
+      this.closeWithSaving();
     },
     pushAddBlock() {
       this.addBlocks.push({

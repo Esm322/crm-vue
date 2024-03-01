@@ -51,13 +51,13 @@ export default {
   align-items: center;
   position: absolute;
   padding: 7px 18px;
-  min-width: 133px;
+  min-width: 200px;
   min-height: 37px;
   visibility: hidden;
   background-color: #111111;
   color: #fff;
   transition: visibility .1s ease-in-out;
-  transform: translate(-46%, -180%);
+  transform: translate(-47%, -180%);
 }
 .tooltip-maincontent {
   display: inline-block;

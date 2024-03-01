@@ -13,9 +13,34 @@
       </select>
     </label>
     <label class="add-contact__label-input"
-    :class="{'add-contact__label-input--active-clear': reactiveInputValue.length > 0}">
+    :class="{'add-contact__label-input--active-clear': reactiveInputValue.length > 0}"
+    v-if="reactiveSelectValue === 'phone' || reactiveSelectValue === 'additional-phone'">
+      <input class="add-contact__input" type="tel" name="contact-data-input"
+      placeholder="Телефон"
+      v-maska
+      data-maska="+7 (###) ###-##-##"
+      v-model="reactiveInputValue">
+    </label>
+    <label class="add-contact__label-input"
+    :class="{'add-contact__label-input--active-clear': reactiveInputValue.length > 0}"
+    v-else-if="reactiveSelectValue === 'Email'">
+      <input class="add-contact__input" type="email" name="contact-data-input"
+      placeholder="Email"
+      v-model="reactiveInputValue">
+    </label>
+    <label class="add-contact__label-input"
+    :class="{'add-contact__label-input--active-clear': reactiveInputValue.length > 0}"
+    v-else-if="reactiveSelectValue === 'Vk'">
       <input class="add-contact__input" type="text" name="contact-data-input"
-      placeholder="Введите данные контакта" v-model="reactiveInputValue">
+      placeholder="Vkontakte"
+      v-model="reactiveInputValue">
+    </label>
+    <label class="add-contact__label-input"
+    :class="{'add-contact__label-input--active-clear': reactiveInputValue.length > 0}"
+    v-else-if="reactiveSelectValue === 'Twitter'">
+      <input class="add-contact__input" type="text" name="contact-data-input"
+      placeholder="Twitter"
+      v-model="reactiveInputValue">
     </label>
     <button class="add-contact__clear-input btn-reset"
     @click="clearInput"
@@ -25,7 +50,10 @@
 </template>
 
 <script>
+import { vMaska } from 'maska';
+
 export default {
+  directives: { maska: vMaska },
   props: ['length', 'selectValue', 'inputValue'],
   computed: {
     reactiveSelectValue: {

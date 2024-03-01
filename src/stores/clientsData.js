@@ -9,6 +9,17 @@ export const useClientsStore = defineStore('client', {
     saveClients() {
       localStorage.setItem('clients', JSON.stringify(this.clientsData));
     },
+    initialContacts(id, contacts) {
+      this.clientsData.map((client) => {
+        if (client.id === id) {
+          client.contacts = contacts;
+
+          this.saveClients();
+        }
+
+        return this.clientsData;
+      });
+    },
     changeClient(
       id,
       firstName,

@@ -13,13 +13,15 @@
         </span>
       </button>
     </div>
-    <form id="form" class="form form__modal">
+    <form id="form" class="form form__modal" method="post"
+    @submit.prevent="checkForm">
       <div class="form__inputs">
         <label class="form__label">
           <span class="label__input-title">
             Фамилия*
           </span>
           <input type="text" id="input-firstname" class="label__input" name="second-name"
+          :class="{ 'error-border': errors.errorSecondName && secondName === '' }"
           v-model="secondName">
         </label>
         <label class="form__label">
@@ -27,6 +29,7 @@
             Имя*
           </span>
           <input type="text" id="input-secondname" class="label__input" name="first-name"
+          :class="{ 'error-border': errors.errorFirstName && firstName === '' }"
           v-model="firstName">
         </label>
         <label class="form__label">
@@ -55,9 +58,20 @@
         Добавить контакт
       </button>
     </div>
+
+    <div class="errors-block">
+      <p class="error-block" v-if="errors.errorSecondName">
+        {{ errors.errorSecondName }}
+      </p>
+
+      <p class="error-block" v-if="errors.errorFirstName">
+        {{ errors.errorFirstName }}
+      </p>
+    </div>
+
     <div class="form__wrapper-btn-save">
       <button id="btn-save-contact" class="wrapper-btn-save__btn-save btn-reset"
-      form="form" @click.prevent="addClient">
+      form="form" @click.prevent="checkForm">
         Сохранить
       </button>
     </div>
@@ -80,6 +94,7 @@ import CloseModalSVG from './SVG components/CloseModalSVG.vue';
 export default {
   data() {
     return {
+      errors: {},
       addBlocks: [],
       firstName: '',
       secondName: '',
@@ -107,6 +122,19 @@ export default {
     },
   },
   methods: {
+    checkForm() {
+      if (this.firstName && this.secondName) {
+        this.addClient();
+      }
+
+      if (!this.firstName) {
+        this.errors.errorFirstName = 'Требуется указать имя';
+      }
+
+      if (!this.secondName) {
+        this.errors.errorSecondName = 'Требуется указать фамилию';
+      }
+    },
     close() {
       this.$emit('closeModalAdd');
       this.addBlocks = [];
@@ -120,10 +148,10 @@ export default {
         .push(
           {
             id: idCreation(this.reactiveData, true),
-            firstName: this.firstName,
-            secondName: this.secondName,
-            thirdName: this.thirdName,
-            fullName: `${this.secondName} ${this.firstName} ${this.thirdName}`,
+            firstName: this.firstName.trim(),
+            secondName: this.secondName.trim(),
+            thirdName: this.thirdName.trim(),
+            fullName: `${this.secondName} ${this.firstName} ${this.thirdName}`.trim(),
             date: {
               newDate: new Date(),
               nowDate: Date.now(),

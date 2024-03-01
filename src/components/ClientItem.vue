@@ -3,22 +3,22 @@
     <td class="table__tbody-tr-td id">
       {{ id }}
     </td>
-    <td class="table__tbody-tr-td">
+    <td class="table__tbody-tr-td full-name">
       {{ fullName }}
     </td>
-    <td class="table__tbody-tr-td">
+    <td class="table__tbody-tr-td date">
       {{ date.slice(0, 10) }}
       <span class="time">
         {{ date.slice(11, 17) }}
       </span>
     </td>
-    <td class="table__tbody-tr-td">
+    <td class="table__tbody-tr-td date-edit">
       {{ edit.slice(0, 10) }}
       <span class="time">
         {{ edit.slice(11, 17) }}
       </span>
     </td>
-    <td class="table__tbody-tr-td">
+    <td class="table__tbody-tr-td contacts">
       <div class="table__tbody-wrapper-contacts">
         <BaseToolTip
         v-for="contact in contacts" :key="contact.selectValue"

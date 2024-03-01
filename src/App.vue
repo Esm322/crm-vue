@@ -1,5 +1,5 @@
 <template>
-  <header class="header">
+  <header class="header offset">
     <div class="container header__container">
       <a href="index.html" class="header__logo">
         <img src="img/logo-1024.svg" alt="CRM skb." class="logo-svg">

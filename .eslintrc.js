@@ -22,5 +22,6 @@ module.exports = {
     'consistent-return': 'off',
     'no-param-reassign': 'off',
     'no-unused-expressions': 'off',
+    'vue/no-setup-props-destructure': 'off',
   },
 };
