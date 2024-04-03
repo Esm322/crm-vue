@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import idCreation from '@/helpers/idCreation';
 
 export const useClientsStore = defineStore('client', {
   state: () => ({
@@ -9,15 +10,38 @@ export const useClientsStore = defineStore('client', {
     saveClients() {
       localStorage.setItem('clients', JSON.stringify(this.clientsData));
     },
+    addClient(
+      firstName,
+      secondName,
+      thirdName,
+      contacts,
+    ) {
+      this.clientsData.push({
+        id: idCreation(this.clientsData, true),
+        firstName,
+        secondName,
+        thirdName,
+        fullName: `${secondName} ${firstName} ${thirdName}`,
+        date: {
+          newDate: new Date(),
+          nowDate: Date.now(),
+        },
+        edit: {
+          newEdit: new Date(),
+          nowEdit: Date.now(),
+        },
+        contacts,
+      });
+
+      this.saveClients();
+    },
     initialContacts(id, contacts) {
-      this.clientsData.map((client) => {
+      this.clientsData.forEach((client) => {
         if (client.id === id) {
           client.contacts = contacts;
 
           this.saveClients();
         }
-
-        return this.clientsData;
       });
     },
     changeClient(
@@ -27,30 +51,27 @@ export const useClientsStore = defineStore('client', {
       thirdName,
       contacts,
     ) {
-      this.clientsData.map((client) => {
+      this.clientsData.forEach((client) => {
         if (client.id === id) {
           client.firstName = firstName;
           client.secondName = secondName;
           client.thirdName = thirdName;
+          client.fullName = `${secondName} ${firstName} ${thirdName}`;
           client.edit.newEdit = new Date();
           client.edit.nowEdit = Date.now();
           client.contacts = contacts;
 
           this.saveClients();
         }
-
-        return this.clientsData;
       });
     },
     deleteClient(id) {
-      this.clientsData.map((client, i) => {
+      this.clientsData.forEach((client, i) => {
         if (client.id === id) {
           this.clientsData.splice(i, 1);
 
           this.saveClients();
         }
-
-        return this.clientsData;
       });
     },
   },

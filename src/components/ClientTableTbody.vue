@@ -9,8 +9,6 @@
       :date="client.date"
       :edit="client.edit"
       :contacts="client.contacts"
-      :active-id="client.id === activeId"
-      :active-id-delete="client.id === activeIdDelete"
       @show-modal="$emit('showModal', client)"
       @show-modal-delete="$emit('showModalDelete', client)"/>
     </TransitionGroup>
@@ -25,7 +23,7 @@ import ClientItem from './ClientItem.vue';
 
 export default {
   emits: ['showModal', 'showModalDelete'],
-  props: ['clients', 'activeId', 'activeIdDelete'],
+  props: ['clients'],
   components: {
     ClientItem,
   },

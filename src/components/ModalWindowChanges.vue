@@ -102,6 +102,7 @@ export default {
       copyClient: cloneDeep(this.activeId),
     };
   },
+  emits: ['closeModalChanges'],
   props: ['activeId'],
   components: {
     ModalWindow,
@@ -149,7 +150,7 @@ export default {
         this.addBlocks,
       );
 
-      this.closeWithSaving();
+      this.$emit('closeModalChanges');
     },
     deleteItem(id) {
       this.deleteClient(id);

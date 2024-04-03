@@ -38,6 +38,7 @@ import ModalWindow from './ModalWindow.vue';
 import CloseModalSVG from './SVG components/CloseModalSVG.vue';
 
 export default {
+  emits: ['closeModalDelete'],
   props: ['activeIdDelete'],
   components: {
     ModalWindow,

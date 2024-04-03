@@ -53,8 +53,6 @@
 
           <ClientTableTbody
           :clients="clients"
-          :active-id="activeId"
-          :active-id-delete="activeIdDelete"
           @show-modal="activeId = $event"
           @show-modal-delete="activeIdDelete = $event"/>
 
@@ -275,7 +273,7 @@ export default {
   },
   mounted() {
     this.$watch(
-      () => this.isModalAddVisible || this.activeId,
+      () => this.isModalAddVisible || this.activeId || this.activeIdDelete,
       (val) => document.body.classList.toggle('no-overflow', val),
       { immediate: true },
     );

@@ -48,7 +48,7 @@ import ChangeSVG from './SVG components/ChangeSVG.vue';
 
 export default {
   emits: ['showModal', 'showModalDelete'],
-  props: ['id', 'fullName', 'date', 'edit', 'contacts', 'activeId', 'activeIdDelete'],
+  props: ['id', 'fullName', 'date', 'edit', 'contacts'],
   components: {
     BaseToolTip,
     DeleteSVG,

@@ -71,19 +71,19 @@
 
     <div class="form__wrapper-btn-save">
       <button id="btn-save-contact" class="wrapper-btn-save__btn-save btn-reset"
-      form="form" @click.prevent="checkForm">
+      form="form" @click="checkForm">
         Сохранить
       </button>
     </div>
     <button id="btn-cancel-contact" class="btns__btn-cancel btn-reset"
-    @click.prevent="close">
+    @click="close">
       Отмена
     </button>
   </ModalWindow>
 </template>
 
 <script>
-import { mapActions } from 'pinia';
+import { mapActions, mapState } from 'pinia';
 import { useClientsStore } from '@/stores/clientsData';
 import idCreation from '@/helpers/idCreation';
 import ModalWindow from './ModalWindow.vue';
@@ -101,6 +101,7 @@ export default {
       thirdName: '',
     };
   },
+  emits: ['closeModalAdd'],
   props: ['clients'],
   components: {
     ModalWindow,
@@ -109,22 +110,16 @@ export default {
     CloseModalSVG,
   },
   computed: {
-    reactiveData: {
-      get() {
-        return this.clients;
-      },
-      set(val) {
-        this.$emit('update:clients', val);
-      },
-    },
+    ...mapState(useClientsStore, ['clientsData']),
     newClientId() {
-      return idCreation(this.reactiveData, true);
+      return idCreation(this.clientsData, true);
     },
   },
   methods: {
+    ...mapActions(useClientsStore, ['addClient']),
     checkForm() {
       if (this.firstName && this.secondName) {
-        this.addClient();
+        this.add();
       }
 
       if (!this.firstName) {
@@ -137,34 +132,15 @@ export default {
     },
     close() {
       this.$emit('closeModalAdd');
-      this.addBlocks = [];
-      this.firstName = '';
-      this.secondName = '';
-      this.thirdName = '';
     },
-    ...mapActions(useClientsStore, ['saveClients']),
-    addClient() {
-      this.reactiveData
-        .push(
-          {
-            id: idCreation(this.reactiveData, true),
-            firstName: this.firstName.trim(),
-            secondName: this.secondName.trim(),
-            thirdName: this.thirdName.trim(),
-            fullName: `${this.secondName} ${this.firstName} ${this.thirdName}`.trim(),
-            date: {
-              newDate: new Date(),
-              nowDate: Date.now(),
-            },
-            edit: {
-              newEdit: new Date(),
-              nowEdit: Date.now(),
-            },
-            contacts: this.addBlocks,
-          },
-        );
+    add() {
+      this.addClient(
+        this.firstName,
+        this.secondName,
+        this.thirdName,
+        this.addBlocks,
+      );
 
-      this.saveClients();
       this.close();
     },
     pushAddBlock() {
