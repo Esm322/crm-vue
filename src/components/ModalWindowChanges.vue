@@ -5,7 +5,7 @@
         Изменить данные
       </h3>
       <span class="modal__id-title">
-        ID: {{ client.id }}
+        ID: {{ activeId.client.id }}
       </span>
       <button class="btn-reset" @click="close">
         <span class="close" id="close">
@@ -20,30 +20,30 @@
             Фамилия*
           </span>
           <input type="text" id="input-firstname" class="label__input" name="second-name"
-          :class="{ 'error-border': errors.errorSecondName && secondName === '' }"
-          v-model="secondName">
+          :class="{ 'error-border': errors.errorSecondName && activeClient.secondName === '' }"
+          v-model="activeClient.secondName">
         </label>
         <label class="form__label">
           <span class="label__input-title">
             Имя*
           </span>
           <input type="text" id="input-secondname" class="label__input" name="first-name"
-          :class="{ 'error-border': errors.errorFirstName && firstName === '' }"
-          v-model="firstName">
+          :class="{ 'error-border': errors.errorFirstName && activeClient.firstName === '' }"
+          v-model="activeClient.firstName">
         </label>
         <label class="form__label">
           <span class="label__input-title">
             Отчество
           </span>
           <input type="text" id="input-thirdname" class="label__input" name="third-name"
-          v-model="thirdName">
+          v-model="activeClient.thirdName">
         </label>
       </div>
     </form>
     <div id="form__add-contact" class="form__add-contact">
       <div class="add-contact__wrapper-contacts" v-show="copyContacts.length > 0"
       :class="{ 'add-contact__wrapper-contacts--active': copyContacts.length > 1 }">
-        <ModalWindowAddBlock v-for="contact in addBlocks" :key="contact"
+        <ModalWindowAddBlock v-for="contact in activeClient.addBlocks" :key="contact"
         :length="addBlocks.length"
         v-model:select-value="contact.selectValue"
         v-model:input-value="contact.inputValue"/>
@@ -75,94 +75,90 @@
     </div>
     <button id="btn-cancel-contact" class="btns__btn-cancel btn-reset"
     style="width: 100px;"
-    @click.prevent="deleteItem(client.id)">
-      Удалить клиента
-    </button>
-  </ModalWindow>
+    @click.prevent="deleteActiveClient(client.value.id)">
+
+    Удалить клиента
+  </button>
+</ModalWindow>
 </template>
 
-<script>
-import { mapState, mapActions } from 'pinia';
-import { useClientsStore } from '@/stores/clientsData';
+<script setup>
+import {
+  reactive,
+  computed,
+  inject,
+} from 'vue';
 import cloneDeep from 'lodash.clonedeep';
+import useCheckForm from '@/composables/useCheckForm';
 import ModalWindow from './ModalWindow.vue';
 import ModalWindowAddBlock from './ModalWindowAddBlock.vue';
 import AddContactSVG from './SVG components/AddContactSVG.vue';
 import CloseModalSVG from './SVG components/CloseModalSVG.vue';
 
-export default {
-  data() {
-    return {
-      errors: {},
-      addBlocks: this.activeId.contacts,
-      firstName: this.activeId.firstName,
-      secondName: this.activeId.secondName,
-      thirdName: this.activeId.thirdName,
+const props = defineProps({
+  activeId: Object,
+  clients: Array,
+});
 
-      copyClient: cloneDeep(this.activeId),
-    };
-  },
-  emits: ['closeModalChanges'],
-  props: ['activeId'],
-  components: {
-    ModalWindow,
-    ModalWindowAddBlock,
-    AddContactSVG,
-    CloseModalSVG,
-  },
-  computed: {
-    ...mapState(useClientsStore, ['clientsData']),
-    client() {
-      return this.clientsData.find((item) => item.id === this.activeId.id);
-    },
-    copyContacts() {
-      return this.client.contacts;
-    },
-  },
-  methods: {
-    checkForm() {
-      if (this.firstName && this.secondName) {
-        this.change();
-      }
+const errors = reactive({
+  error: {},
+});
+const activeClient = reactive({
+  addBlocks: props.activeId.client.contacts,
+  firstName: props.activeId.client.firstName,
+  secondName: props.activeId.client.secondName,
+  thirdName: props.activeId.client.thirdName,
+});
 
-      if (!this.firstName) {
-        this.errors.errorFirstName = 'Требуется указать имя';
-      }
+const copyClient = cloneDeep(props.activeId);
 
-      if (!this.secondName) {
-        this.errors.errorSecondName = 'Требуется указать фамилию';
-      }
-    },
-    ...mapActions(useClientsStore, ['changeClient', 'deleteClient', 'initialContacts']),
-    close() {
-      this.initialContacts(this.activeId.id, this.copyClient.contacts);
-      this.$emit('closeModalChanges');
-    },
-    closeWithSaving() {
-      this.$emit('closeModalChanges');
-    },
-    change() {
-      this.changeClient(
-        this.activeId.id,
-        this.firstName,
-        this.secondName,
-        this.thirdName,
-        this.addBlocks,
-      );
+const client = computed(
+  () => props.clients.find((item) => item.id === props.activeId.client.id),
+);
 
-      this.$emit('closeModalChanges');
-    },
-    deleteItem(id) {
-      this.deleteClient(id);
-      this.closeWithSaving();
-    },
-    pushAddBlock() {
-      this.addBlocks.push({
-        block: ModalWindowAddBlock,
-        selectValue: 'phone',
-        inputValue: '',
-      });
-    },
-  },
+const copyContacts = computed(() => client.value.contacts);
+
+const deleteClient = inject('deleteClient');
+const changeClient = inject('changeClient');
+const initialContacts = inject('initialContacts');
+const closeModal = inject('closeModal');
+
+const close = () => {
+  initialContacts(props.activeId.client.id, copyClient.client.contacts);
+  closeModal();
+};
+
+const change = () => {
+  changeClient(
+    props.activeId.client.id,
+    activeClient.firstName,
+    activeClient.secondName,
+    activeClient.thirdName,
+    activeClient.addBlocks,
+  );
+
+  closeModal();
+};
+
+const checkForm = () => {
+  useCheckForm(
+    activeClient.firstName,
+    activeClient.secondName,
+    errors.error,
+    change,
+  );
+};
+
+const deleteActiveClient = (id) => {
+  deleteClient(id);
+  closeModal();
+};
+
+const pushAddBlock = () => {
+  activeClient.addBlocks.push({
+    block: ModalWindowAddBlock,
+    selectValue: 'phone',
+    inputValue: '',
+  });
 };
 </script>
