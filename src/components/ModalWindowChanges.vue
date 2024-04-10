@@ -44,7 +44,7 @@
       <div class="add-contact__wrapper-contacts" v-show="copyContacts.length > 0"
       :class="{ 'add-contact__wrapper-contacts--active': copyContacts.length > 1 }">
         <ModalWindowAddBlock v-for="contact in activeClient.addBlocks" :key="contact"
-        :length="addBlocks.length"
+        :length="activeClient.addBlocks.length"
         v-model:select-value="contact.selectValue"
         v-model:input-value="contact.inputValue"/>
       </div>
@@ -75,7 +75,7 @@
     </div>
     <button id="btn-cancel-contact" class="btns__btn-cancel btn-reset"
     style="width: 100px;"
-    @click.prevent="deleteActiveClient(client.value.id)">
+    @click.prevent="deleteActiveClient(client.id)">
 
     Удалить клиента
   </button>

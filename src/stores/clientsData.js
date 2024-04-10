@@ -21,7 +21,7 @@ export const useClientsStore = defineStore('client', {
         firstName,
         secondName,
         thirdName,
-        fullName: `${secondName} ${firstName} ${thirdName}`,
+        // fullName: `${secondName} ${firstName} ${thirdName}`,
         date: {
           newDate: new Date(),
           nowDate: Date.now(),

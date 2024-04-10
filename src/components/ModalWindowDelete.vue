@@ -5,7 +5,7 @@
       style="margin: 0 auto;margin-right: auto;">
           Удалить клиента
       </h3>
-      <button class="btn-reset" @click="close">
+      <button class="btn-reset" @click="closeModal">
         <span class="close" id="close">
           <CloseModalSVG/>
         </span>
@@ -20,45 +20,36 @@
     </p>
     <div class="form__wrapper-btn-save">
       <button id="btn-save-contact" class="wrapper-btn-save__btn-save btn-reset"
-      @click="deleteItem(client.id)">
+      @click="deleteActiveClient(client.id)">
         Удалить
       </button>
     </div>
     <button id="btn-cancel-contact" class="btns__btn-cancel btn-reset"
-    @click="close">
+    @click="closeModal">
       Отмена
     </button>
   </ModalWindow>
 </template>
 
-<script>
-import { mapActions, mapState } from 'pinia';
-import { useClientsStore } from '@/stores/clientsData';
+<script setup>
+import { computed, inject } from 'vue';
 import ModalWindow from './ModalWindow.vue';
 import CloseModalSVG from './SVG components/CloseModalSVG.vue';
 
-export default {
-  emits: ['closeModalDelete'],
-  props: ['activeIdDelete'],
-  components: {
-    ModalWindow,
-    CloseModalSVG,
-  },
-  computed: {
-    ...mapState(useClientsStore, ['clientsData']),
-    client() {
-      return this.clientsData.find((item) => item.id === this.activeIdDelete.id);
-    },
-  },
-  methods: {
-    ...mapActions(useClientsStore, ['deleteClient']),
-    close() {
-      this.$emit('closeModalDelete');
-    },
-    deleteItem(id) {
-      this.deleteClient(id);
-      this.close();
-    },
-  },
+const props = defineProps({
+  activeIdDelete: Object,
+  clients: Array,
+});
+
+const closeModal = inject('closeModal');
+const deleteClient = inject('deleteClient');
+
+const client = computed(
+  () => props.clients.find((item) => item.id === props.activeIdDelete.client.id),
+);
+
+const deleteActiveClient = (id) => {
+  deleteClient(id);
+  closeModal();
 };
 </script>

@@ -70,8 +70,9 @@
         :clients="useClients"
         :active-id="activeId"/>
 
-        <!-- <ModalWindowDelete v-if="activeIdDelete"
-        :active-id-delete="activeIdDelete"/> -->
+        <ModalWindowDelete v-if="activeIdDelete.client"
+        :clients="useClients"
+        :active-id-delete="activeIdDelete"/>
 
       </div>
     </section>
@@ -95,7 +96,7 @@ import useSortDateCreated from '@/composables/useSortDateCreated';
 import useSortDateEdited from '@/composables/useSortDateEdited';
 import ModalWindowAdd from '@/components/ModalWindowAdd.vue';
 import ModalWindowChanges from '@/components/ModalWindowChanges.vue';
-// import ModalWindowDelete from '@/components/ModalWindowDelete.vue';
+import ModalWindowDelete from '@/components/ModalWindowDelete.vue';
 import ClientTableTbody from '@/components/ClientTableTbody.vue';
 import DownArrowSVG from '@/components/SVG components/DownArrowSVG.vue';
 import UpArrowSVG from '@/components/SVG components/UpArrowSVG.vue';
@@ -205,6 +206,7 @@ watch(
 provide('showModalChange', showModalChange);
 provide('showModalDelete', showModalDelete);
 provide('closeModal', closeModal);
+provide('addClient', store.addClient);
 provide('deleteClient', store.deleteClient);
 provide('changeClient', store.changeClient);
 provide('initialContacts', store.initialContacts);

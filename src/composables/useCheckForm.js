@@ -1,6 +1,6 @@
-export default function useCheckForm(firstName, secondName, errors, change) {
+export default function useCheckForm(firstName, secondName, errors, action) {
   if (firstName && secondName) {
-    change();
+    action();
   }
 
   if (!firstName) {

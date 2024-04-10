@@ -18,27 +18,25 @@
   <footer></footer>
 </template>
 
-<script>
+<script setup>
+import { onMounted, ref } from 'vue';
 import { useClientsStore } from './stores/clientsData';
 
-export default {
-  data() {
-    return {
-      searchValue: '',
-    };
-  },
-  created() {
-    window.addEventListener('input', () => {
-      if (this.searchValue) {
-        useClientsStore().$patch({
-          searchValueStore: this.searchValue,
-        });
-      } else {
-        useClientsStore().$patch({
-          searchValueStore: '',
-        });
-      }
-    });
-  },
-};
+const store = useClientsStore();
+
+const searchValue = ref('');
+
+onMounted(() => {
+  window.addEventListener('input', () => {
+    if (searchValue.value) {
+      store.$patch({
+        searchValueStore: searchValue.value,
+      });
+    } else {
+      store.$patch({
+        searchValueStore: '',
+      });
+    }
+  });
+});
 </script>

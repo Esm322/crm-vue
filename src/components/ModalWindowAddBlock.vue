@@ -17,8 +17,7 @@
     v-if="reactiveSelectValue === 'phone' || reactiveSelectValue === 'additional-phone'">
       <input class="add-contact__input" type="tel" name="contact-data-input"
       placeholder="Телефон"
-      v-maska
-      data-maska="+7 (###) ###-##-##"
+      v-maska data-maska="+7 (###) ###-##-##"
       v-model="reactiveInputValue">
     </label>
     <label class="add-contact__label-input"
@@ -49,34 +48,27 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue';
 import { vMaska } from 'maska';
 
-export default {
-  directives: { maska: vMaska },
-  props: ['length', 'selectValue', 'inputValue'],
-  computed: {
-    reactiveSelectValue: {
-      get() {
-        return this.selectValue;
-      },
-      set(val) {
-        this.$emit('update:selectValue', val);
-      },
-    },
-    reactiveInputValue: {
-      get() {
-        return this.inputValue;
-      },
-      set(val) {
-        this.$emit('update:inputValue', val);
-      },
-    },
-  },
-  methods: {
-    clearInput() {
-      this.reactiveInputValue = '';
-    },
-  },
-};
+const props = defineProps({
+  length: Number,
+  selectValue: String,
+  inputValue: String,
+});
+
+const emits = defineEmits(['update:selectValue', 'update:inputValue']);
+
+const reactiveSelectValue = computed({
+  get: () => props.selectValue,
+  set: (val) => emits('update:selectValue', val),
+});
+
+const reactiveInputValue = computed({
+  get: () => props.inputValue,
+  set: (val) => emits('update:inputValue', val),
+});
+
+const clearInput = () => reactiveInputValue.value = '';
 </script>
